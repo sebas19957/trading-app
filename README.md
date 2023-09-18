@@ -13,11 +13,7 @@
 yarn install
 ```
 
-5. Clonar el archivo `.env.template` y renombrar la copia a `.env`
-
-6. Llenar la variables de entorno definidas en el `.env`
-
-7. Ejecutar la aplicación de dev:
+3. Ejecutar la aplicación de dev:
 
 ```
 yarn start
