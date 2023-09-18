@@ -1,6 +1,6 @@
 # Aplicación de comercio
 
-## Curso: Linea de Énfasis I: BUENAS PRACTICAS EN DISEÑO DE SOFTWARE
+## Asignatura: Linea de Énfasis I: BUENAS PRACTICAS EN DISEÑO DE SOFTWARE
 
 ### Integrantes: Jose Marulanda, Alexis, Sebastian Mosquera
 
