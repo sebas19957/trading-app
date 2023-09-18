@@ -11,6 +11,11 @@ const navConfig = [
     path: '/products',
     icon: icon('ic_cart'),
   },
+  {
+    title: 'Subir Productos',
+    path: '/upload-products',
+    icon: icon('ic_analytics'),
+  },
 ];
 
 export default navConfig;

@@ -7,6 +7,7 @@ import SimpleLayout from './layouts/simple';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
+import UploadProductsPage from './pages/UploadProductsPage';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import DashboardAppPage from './pages/DashboardAppPage';
@@ -25,6 +26,7 @@ export default function Router() {
         { path: 'user', element: <UserPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'shopping-cart', element: <ShoppingCartPage /> },
+        { path: 'upload-products', element: <UploadProductsPage /> },
         {
           path: 'products/:productId',
           element: <ProductDetailPage />,

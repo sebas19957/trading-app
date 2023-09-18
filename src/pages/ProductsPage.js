@@ -142,19 +142,23 @@ export default function ProductsPage() {
   React.useEffect(() => {
     const productosLS = localStorage.getItem('products');
 
-    if (!productosLS) {
-      const productosString = JSON.stringify(PRODUCTS);
-      localStorage.setItem('products', productosString);
-    } else {
+    if (productosLS) {
       const productosObjeto = JSON.parse(productosLS);
       setProductos(productosObjeto);
     }
+    // if (!productosLS) {
+    //   const productosString = JSON.stringify(PRODUCTS);
+    //   localStorage.setItem('products', productosString);
+    // } else {
+    //   const productosObjeto = JSON.parse(productosLS);
+    //   setProductos(productosObjeto);
+    // }
   }, []);
 
   return (
     <>
       <Helmet>
-        <title> Products </title>
+        <title> Productos </title>
       </Helmet>
 
       <Container>

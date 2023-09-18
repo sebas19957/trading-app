@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 // @mui
-import { Box, Button, CircularProgress, Container, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import AddIcon from '@mui/icons-material/Add';
@@ -41,7 +41,7 @@ export default function ProductDetailPage() {
     } else {
       setError(true);
     }
-  }, []);
+  }, [productId]);
 
   const addProduct = () => {
     if (product.Cantidad >= quantity + 1) {

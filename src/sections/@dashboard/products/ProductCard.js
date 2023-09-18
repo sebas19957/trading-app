@@ -25,7 +25,7 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { SKU, Nombre, Descripcion, Cantidad, PrecioUnitario, cover } = product;
+  const { SKU, Descripcion, PrecioUnitario, cover } = product;
 
   return (
     <Card sx={{ cursor: 'pointer' }}>
