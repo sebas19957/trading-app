@@ -31,7 +31,7 @@ const StyledRoot = styled('div')(({ theme }) => ({
 
 export default function CartWidget() {
   return (
-    <StyledRoot>
+    <StyledRoot onClick={() => console.log('sebas')}>
       <Badge showZero badgeContent={0} color="error" max={99}>
         <Iconify icon="eva:shopping-cart-fill" width={24} height={24} />
       </Badge>

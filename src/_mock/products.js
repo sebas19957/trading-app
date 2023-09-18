@@ -1,57 +1,128 @@
-import { faker } from '@faker-js/faker';
-import { sample } from 'lodash';
-
-// ----------------------------------------------------------------------
-
-const PRODUCT_NAME = [
-  'Nike Air Force 1 NDESTRUKT',
-  'Nike Space Hippie 04',
-  'Nike Air Zoom Pegasus 37 A.I.R. Chaz Bear',
-  'Nike Blazer Low 77 Vintage',
-  'Nike ZoomX SuperRep Surge',
-  'Zoom Freak 2',
-  'Nike Air Max Zephyr',
-  'Jordan Delta',
-  'Air Jordan XXXV PF',
-  'Nike Waffle Racer Crater',
-  'Kyrie 7 EP Sisterhood',
-  'Nike Air Zoom BB NXT',
-  'Nike Air Force 1 07 LX',
-  'Nike Air Force 1 Shadow SE',
-  'Nike Air Zoom Tempo NEXT%',
-  'Nike DBreak-Type',
-  'Nike Air Max Up',
-  'Nike Air Max 270 React ENG',
-  'NikeCourt Royale',
-  'Nike Air Zoom Pegasus 37 Premium',
-  'Nike Air Zoom SuperRep',
-  'NikeCourt Royale',
-  'Nike React Art3mis',
-  'Nike React Infinity Run Flyknit A.I.R. Chaz Bear',
-];
-const PRODUCT_COLOR = ['#00AB55', '#000000', '#FFFFFF', '#FFC0CB', '#FF4842', '#1890FF', '#94D82D', '#FFC107'];
-
-// ----------------------------------------------------------------------
-
-const products = [...Array(24)].map((_, index) => {
-  const setIndex = index + 1;
-
-  return {
-    id: faker.datatype.uuid(),
-    cover: `/assets/images/products/product_${setIndex}.jpg`,
-    name: PRODUCT_NAME[index],
-    price: faker.datatype.number({ min: 4, max: 99, precision: 0.01 }),
-    priceSale: setIndex % 3 ? null : faker.datatype.number({ min: 19, max: 29, precision: 0.01 }),
-    colors:
-      (setIndex === 1 && PRODUCT_COLOR.slice(0, 2)) ||
-      (setIndex === 2 && PRODUCT_COLOR.slice(1, 3)) ||
-      (setIndex === 3 && PRODUCT_COLOR.slice(2, 4)) ||
-      (setIndex === 4 && PRODUCT_COLOR.slice(3, 6)) ||
-      (setIndex === 23 && PRODUCT_COLOR.slice(4, 6)) ||
-      (setIndex === 24 && PRODUCT_COLOR.slice(5, 6)) ||
-      PRODUCT_COLOR,
-    status: sample(['sale', 'new', '', '']),
-  };
-});
-
-export default products;
+export const PRODUCTS = {
+  productosNormales: [
+    {
+      SKU: 'EA001',
+      Nombre: 'Camiseta',
+      Descripcion: 'Camiseta de algodón',
+      Cantidad: 50,
+      PrecioUnitario: 60000,
+      cover: `/assets/images/products/Camiseta.PNG`,
+    },
+    {
+      SKU: 'EA002',
+      Nombre: 'Pantalon',
+      Descripcion: 'Pantalón vaquero',
+      Cantidad: 30,
+      PrecioUnitario: 120000,
+      cover: `/assets/images/products/Pantalon.PNG`,
+    },
+    {
+      SKU: 'EA003',
+      Nombre: 'Zapatos',
+      Descripcion: 'Zapatos de cuero',
+      Cantidad: 20,
+      PrecioUnitario: 180000,
+      cover: `/assets/images/products/Zapatos.PNG`,
+    },
+    {
+      SKU: 'EA004',
+      Nombre: 'Bolso',
+      Descripcion: 'Bolso de mano',
+      Cantidad: 15,
+      PrecioUnitario: 90000,
+      cover: `/assets/images/products/Bolso.PNG`,
+    },
+    {
+      SKU: 'EA005',
+      Nombre: 'Reloj',
+      Descripcion: 'Reloj de pulsera',
+      Cantidad: 10,
+      PrecioUnitario: 150000,
+      cover: `/assets/images/products/normales/Reloj.PNG`,
+    },
+  ],
+  productosPeso: [
+    {
+      SKU: 'WE001',
+      Nombre: 'Manzanas',
+      Descripcion: 'Manzanas frescas',
+      Cantidad: '100 kg',
+      PrecioUnitario: 2000000,
+      cover: `/assets/images/peso/Manzanas.PNG`,
+    },
+    {
+      SKU: 'WE002',
+      Nombre: 'Platanos',
+      Descripcion: 'Plátanos maduros',
+      Cantidad: '80 kg',
+      PrecioUnitario: 1500000,
+      cover: `/assets/images/peso/Platanos.PNG`,
+    },
+    {
+      SKU: 'WE003',
+      Nombre: 'Naranjas',
+      Descripcion: 'Naranjas jugosas',
+      Cantidad: '120 kg',
+      PrecioUnitario: 3000000,
+      cover: `/assets/images/peso/Naranjas.PNG`,
+    },
+    {
+      SKU: 'WE004',
+      Nombre: 'Uvas',
+      Descripcion: 'Uvas sin semillas',
+      Cantidad: '60 kg',
+      PrecioUnitario: 2500000,
+      cover: `/assets/images/peso/Uvas.PNG`,
+    },
+    {
+      SKU: 'WE005',
+      Nombre: 'Sandías',
+      Descripcion: 'Sandías dulces',
+      Cantidad: '40 kg',
+      PrecioUnitario: 1800000,
+      cover: `/assets/images/peso/Sandías.PNG`,
+    },
+  ],
+  productosDescuentoEspecial: [
+    {
+      SKU: 'SP001',
+      Nombre: 'Libro',
+      Descripcion: 'Libro de aventuras',
+      Cantidad: 20,
+      PrecioUnitario: 45000,
+      cover: `/assets/images/peso/Libro.PNG`,
+    },
+    {
+      SKU: 'SP002',
+      Nombre: 'Película',
+      Descripcion: 'DVD de película clásica',
+      Cantidad: 30,
+      PrecioUnitario: 30000,
+      cover: `/assets/images/peso/DVD.PNG`,
+    },
+    {
+      SKU: 'SP003',
+      Nombre: 'Juego de mesa',
+      Descripcion: 'Juego de mesa para toda la familia',
+      Cantidad: 15,
+      PrecioUnitario: 75000,
+      cover: `/assets/images/peso/Juego.PNG`,
+    },
+    {
+      SKU: 'SP004',
+      Nombre: 'Auriculares',
+      Descripcion: 'Auriculares inalámbricos',
+      Cantidad: 25,
+      PrecioUnitario: 90000,
+      cover: `/assets/images/peso/Auriculares.PNG`,
+    },
+    {
+      SKU: 'SP005',
+      Nombre: 'Cámara',
+      Descripcion: 'Cámara digital compacta',
+      Cantidad: 10,
+      PrecioUnitario: 150000,
+      cover: `/assets/images/peso/Camara.PNG`,
+    },
+  ],
+};

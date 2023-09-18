@@ -2,11 +2,11 @@ import PropTypes from 'prop-types';
 // @mui
 import { Box, Card, Link, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { NavLink as RouterLink } from 'react-router-dom';
 // utils
 import { fCurrency } from '../../../utils/formatNumber';
 // components
 import Label from '../../../components/label';
-import { ColorPreview } from '../../../components/color-utils';
 
 // ----------------------------------------------------------------------
 
@@ -25,54 +25,45 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { name, cover, price, colors, status, priceSale } = product;
+  const { SKU, Nombre, Descripcion, Cantidad, PrecioUnitario, cover } = product;
 
   return (
-    <Card>
-      <Box sx={{ pt: '100%', position: 'relative' }}>
-        {status && (
-          <Label
-            variant="filled"
-            color={(status === 'sale' && 'error') || 'info'}
-            sx={{
-              zIndex: 9,
-              top: 16,
-              right: 16,
-              position: 'absolute',
-              textTransform: 'uppercase',
-            }}
-          >
-            {status}
-          </Label>
-        )}
-        <StyledProductImg alt={name} src={cover} />
-      </Box>
-
-      <Stack spacing={2} sx={{ p: 3 }}>
-        <Link color="inherit" underline="hover">
-          <Typography variant="subtitle2" noWrap>
-            {name}
-          </Typography>
-        </Link>
-
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={colors} />
-          <Typography variant="subtitle1">
-            <Typography
-              component="span"
-              variant="body1"
+    <Card sx={{ cursor: 'pointer' }}>
+      <Box component={RouterLink} to={`/products/${SKU}`} sx={{ textDecoration: 'none', color: 'black' }}>
+        <Box sx={{ pt: '100%', position: 'relative' }}>
+          {SKU.includes('SP') && (
+            <Label
+              variant="filled"
+              color="error"
               sx={{
-                color: 'text.disabled',
-                textDecoration: 'line-through',
+                zIndex: 9,
+                top: 16,
+                right: 16,
+                position: 'absolute',
+                textTransform: 'uppercase',
               }}
             >
-              {priceSale && fCurrency(priceSale)}
+              Promoción
+            </Label>
+          )}
+          <StyledProductImg alt={Descripcion} src={cover} />
+        </Box>
+
+        <Stack spacing={2} sx={{ p: 3 }}>
+          <Link color="inherit" underline="hover">
+            <Typography variant="subtitle2" noWrap>
+              {Descripcion}
             </Typography>
-            &nbsp;
-            {fCurrency(price)}
-          </Typography>
+          </Link>
+
+          <Stack direction="row" alignItems="center" justifyContent="space-between">
+            <Typography variant="subtitle1">
+              &nbsp;
+              {fCurrency(PrecioUnitario)}
+            </Typography>
+          </Stack>
         </Stack>
-      </Stack>
+      </Box>
     </Card>
   );
 }
