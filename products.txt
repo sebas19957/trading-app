@@ -41,46 +41,46 @@
       "cover": "/assets/images/products/normales/Reloj.PNG"
     }
   ],
-  "productosPeso": [
+   "productosPeso": [
     {
       "SKU": "WE001",
-      "Nombre": "Manzanas",
-      "Descripcion": "Manzanas frescas",
-      "Cantidad": 100,
-      "PrecioUnitario": 2500,
-      "cover": "/assets/images/products/peso/Manzanas.PNG"
+      "Nombre": "Café",
+      "Descripcion": "Café en granos",
+      "Cantidad": 10000,
+      "PrecioUnitario": 10,
+      "cover": "/assets/images/products/peso/Cafe.PNG"
     },
     {
       "SKU": "WE002",
-      "Nombre": "Platanos",
-      "Descripcion": "Plátanos maduros",
-      "Cantidad": 80,
-      "PrecioUnitario": 2000,
-      "cover": "/assets/images/products/peso/Platanos.PNG"
+      "Nombre": "Azúcar",
+      "Descripcion": "Azúcar blanca",
+      "Cantidad": 8000,
+      "PrecioUnitario": 3,
+      "cover": "/assets/images/products/peso/Azucar.PNG"
     },
     {
       "SKU": "WE003",
-      "Nombre": "Naranjas",
-      "Descripcion": "Naranjas jugosas",
-      "Cantidad": 120,
-      "PrecioUnitario": 3500,
-      "cover": "/assets/images/products/peso/Naranjas.PNG"
+      "Nombre": "Arroz",
+      "Descripcion": "Arroz blanco",
+      "Cantidad": 12000,
+      "PrecioUnitario": 4,
+      "cover": "/assets/images/products/peso/Arroz.PNG"
     },
     {
       "SKU": "WE004",
-      "Nombre": "Uvas",
-      "Descripcion": "Uvas sin semillas",
-      "Cantidad": 60,
-      "PrecioUnitario": 4000,
-      "cover": "/assets/images/products/peso/Uvas.PNG"
+      "Nombre": "Sal",
+      "Descripcion": "Sal de mesa",
+      "Cantidad": 6000,
+      "PrecioUnitario": 1.5,
+      "cover": "/assets/images/products/peso/Sal.PNG"
     },
     {
       "SKU": "WE005",
-      "Nombre": "Sandías",
-      "Descripcion": "Sandías dulces",
-      "Cantidad": 40,
-      "PrecioUnitario": 15000,
-      "cover": "/assets/images/products/peso/Sandías.PNG"
+      "Nombre": "Harina de trigo",
+      "Descripcion": "Harina de trigo todo uso",
+      "Cantidad": 15000,
+      "PrecioUnitario": 2.65,
+      "cover": "/assets/images/products/peso/Harina.PNG"
     }
   ],
   "productosDescuentoEspecial": [
@@ -94,7 +94,7 @@
     },
     {
       "SKU": "SP002",
-      "Nombre": "Película",
+      "Nombre": "DVD",
       "Descripcion": "DVD de película clásica",
       "Cantidad": 30,
       "PrecioUnitario": 250000,

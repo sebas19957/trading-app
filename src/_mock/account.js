@@ -1,8 +1,8 @@
 // ----------------------------------------------------------------------
 
 const account = {
-  displayName: 'Jaydon Frankie',
-  email: 'demo@minimals.cc',
+  displayName: 'Lionel Andrés Messi',
+  email: 'Lio_goat@thebest.com',
   photoURL: '/assets/images/avatars/avatar_default.jpg',
 };
 

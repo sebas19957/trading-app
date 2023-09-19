@@ -4,9 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 // components
-import { ProductList, ProductCartWidget } from '../sections/@dashboard/products';
-// imgs
-// import NoData from "/assets/response/no_data.png";
+import { ProductList } from '../sections/@dashboard/products';
 
 export const PRODUCTS = {
   productosNormales: [
@@ -137,8 +135,6 @@ export const PRODUCTS = {
   ],
 };
 
-// ----------------------------------------------------------------------
-
 export default function ProductsPage() {
   const [productos, setProductos] = React.useState([]);
   const navigate = useNavigate();
@@ -150,13 +146,6 @@ export default function ProductsPage() {
       const productosObjeto = JSON.parse(productosLS);
       setProductos(productosObjeto);
     }
-    // if (!productosLS) {
-    //   const productosString = JSON.stringify(PRODUCTS);
-    //   localStorage.setItem('products', productosString);
-    // } else {
-    //   const productosObjeto = JSON.parse(productosLS);
-    //   setProductos(productosObjeto);
-    // }
   }, []);
 
   return (
@@ -168,23 +157,20 @@ export default function ProductsPage() {
       <Container>
         {productos.length !== 0 ? (
           <>
-            {/* // ---------------------------------------------------------------------- */}
             <Typography variant="h4" sx={{ mb: 2, mt: 2 }}>
               Productos Normales
             </Typography>
             <ProductList products={productos?.productosNormales} />
-            {/* // ---------------------------------------------------------------------- */}
+
             <Typography variant="h4" sx={{ mb: 2, mt: 4 }}>
               Productos de Peso
             </Typography>
             <ProductList products={productos?.productosPeso} />
-            {/* // ---------------------------------------------------------------------- */}
+
             <Typography variant="h4" sx={{ mb: 2, mt: 4 }}>
               Productos con Descuentos
             </Typography>
             <ProductList products={productos?.productosDescuentoEspecial} />
-            {/* // ---------------------------------------------------------------------- */}
-            {/* <ProductCartWidget /> */}
           </>
         ) : (
           <div

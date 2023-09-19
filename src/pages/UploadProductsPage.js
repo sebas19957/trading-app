@@ -3,7 +3,8 @@ import { Helmet } from 'react-helmet-async';
 
 // @mui
 import { styled } from '@mui/material/styles';
-import { Button, Container, Typography } from '@mui/material';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import { Box, Button, Container, Typography } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -21,10 +22,12 @@ const StyledContent = styled('div')(({ theme }) => ({
 
 export default function UploadProductsPage() {
   const [selectedFile, setSelectedFile] = React.useState(null);
-  const [error, setError] = React.useState('');
+  const [fileName, setFileName] = React.useState('');
+  const [message, setMessage] = React.useState('');
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    setFileName(file.name);
     setSelectedFile(file);
   };
 
@@ -36,12 +39,11 @@ export default function UploadProductsPage() {
         try {
           const parsedData = JSON.parse(fileContent);
 
-          console.log(parsedData);
           localStorage.setItem('products', JSON.stringify(parsedData));
-          setError('Productos cargados exitosamente.');
+          setMessage('Productos cargados exitosamente.');
         } catch (error) {
           console.error('Error al analizar el archivo JSON:', error);
-          setError('Error al analizar el archivo JSON');
+          setMessage('Error al analizar el archivo JSON');
         }
       };
       reader.readAsText(selectedFile);
@@ -56,14 +58,24 @@ export default function UploadProductsPage() {
 
       <Container>
         <StyledContent sx={{ textAlign: 'center', alignItems: 'center' }}>
-          <div>
-            <input type="file" accept=".txt" onChange={handleFileChange} />
-            <Button variant="contained" color="primary" onClick={handleFileUpload}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Box component="label" sx={{ cursor: 'pointer' }}>
+              <img src="/assets/response/upload.PNG" alt="Cargar archivo" style={{ width: '200px', height: '200px' }} />
+              <input type="file" id="fileInput" accept=".txt" onChange={handleFileChange} style={{ display: 'none' }} />
+              <Typography sx={{ mt: -3 }}>{fileName}</Typography>
+            </Box>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleFileUpload}
+              sx={{ mt: 2, backgroundColor: 'black', textTransform: 'uppercase' }}
+              startIcon={<FileUploadIcon />}
+            >
               Subir Archivo
             </Button>
           </div>
           <Typography sx={{ mt: 4 }} color="green">
-            {error}
+            {message}
           </Typography>
         </StyledContent>
       </Container>

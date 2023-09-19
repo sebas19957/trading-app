@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@mui/material/styles';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import { Box, Button, Container, Divider, Grid, IconButton, Typography } from '@mui/material';
+import PaymentIcon from '@mui/icons-material/Payment';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { fCurrency } from '../utils/formatNumber';
+import CartContext from '../context/CartContext';
 
 // ----------------------------------------------------------------------
 const StyledProductImg = styled('img')({
@@ -19,6 +21,7 @@ const StyledProductImg = styled('img')({
 
 export default function ShoppingCartPage() {
   const [products, setProducts] = React.useState([]);
+  const { setCartCount } = useContext(CartContext);
   const [cart, setCart] = React.useState([]);
   const navigate = useNavigate();
 
@@ -63,6 +66,8 @@ export default function ShoppingCartPage() {
     localStorage.setItem('products', JSON.stringify(products));
     localStorage.removeItem('cart');
 
+    setCartCount(0);
+
     // Redireccionar a la página de respuesta
     navigate('/products');
   };
@@ -72,9 +77,26 @@ export default function ShoppingCartPage() {
     cart.forEach((cartProduct) => {
       const product = products.find((product) => product.SKU === cartProduct.SKU);
       if (product && product.SKU.startsWith('SP')) {
-        const eligibleQuantity = Math.floor(cartProduct.quantity / 3);
-        discount += eligibleQuantity * (product.PrecioUnitario * 0.2);
-        discount = Math.min(discount, cartProduct.quantity * (product.PrecioUnitario * 0.5));
+        // const eligibleQuantity = Math.floor(cartProduct.quantity / 3);
+        // discount += eligibleQuantity * (product.PrecioUnitario * 0.2);
+        // discount = Math.min(discount, cartProduct.quantity * (product.PrecioUnitario * 0.5));
+
+        let cantidadDescuentos = Math.floor(product.quantity / 3);
+
+        // Verificar si se aplicarán más de 2 descuentos
+        if (cantidadDescuentos > 2) {
+          cantidadDescuentos = 2;
+        }
+
+        // Calcular el descuento total
+        let descuentoTotal = cantidadDescuentos * 0.2;
+
+        // Verificar si el descuento total supera el 50%
+        if (descuentoTotal > 0.5) {
+          descuentoTotal = 0.5;
+        }
+
+        discount += product.PrecioUnitario * product.quantity * descuentoTotal;
       }
     });
     return discount;
@@ -88,10 +110,23 @@ export default function ShoppingCartPage() {
         if (product.SKU.startsWith('EA')) {
           total += product.PrecioUnitario * cartProduct.quantity;
         } else if (product.SKU.startsWith('WE')) {
-          total += (product.PrecioUnitario / 1000) * cartProduct.quantity;
+          total += product.PrecioUnitario * product.quantity;
         } else if (product.SKU.startsWith('SP')) {
-          const discount = Math.min(Math.floor(cartProduct.quantity / 3) * 0.2, 0.5);
-          total += product.PrecioUnitario * (1 - discount) * cartProduct.quantity;
+          let cantidadDescuentos = Math.floor(product.quantity / 3);
+
+          // Verificar si se aplicarán más de 2 descuentos
+          if (cantidadDescuentos > 2) {
+            cantidadDescuentos = 2;
+          }
+
+          // Calcular el descuento total
+          let descuentoTotal = cantidadDescuentos * 0.2;
+
+          // Verificar si el descuento total supera el 50%
+          if (descuentoTotal > 0.5) {
+            descuentoTotal = 0.5;
+          }
+          total += product.PrecioUnitario * product.quantity * (1 - descuentoTotal);
         }
       }
     });
@@ -105,8 +140,9 @@ export default function ShoppingCartPage() {
       if (product.SKU.startsWith('EA')) {
         total = product.PrecioUnitario * product.quantity;
       } else if (product.SKU.startsWith('WE')) {
-        const cantidadEnKilogramos = product.quantity / 1000;
-        total = product.PrecioUnitario * cantidadEnKilogramos;
+        // const valorGramo = product.PrecioUnitario * product.quantity;
+        // const cantidadEnKilogramos = cantidadEnKilogramos * valorGramo;
+        total = product.PrecioUnitario * product.quantity;
       } else if (product.SKU.startsWith('SP')) {
         let cantidadDescuentos = Math.floor(product.quantity / 3);
 
@@ -165,6 +201,9 @@ export default function ShoppingCartPage() {
 
     // Eliminar el producto del carrito en el estado
     setCart(updatedCart);
+
+    const cartProductsUpdate = JSON.parse(localStorage.getItem('cart'));
+    setCartCount(cartProductsUpdate.length);
   };
 
   return (
@@ -215,7 +254,7 @@ export default function ShoppingCartPage() {
                                 <Box
                                   sx={{
                                     display: 'flex',
-                                    width: '140px',
+                                    width: product.SKU.startsWith('WE') ? '230px' : '120px',
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
                                     height: '40px',
@@ -224,12 +263,25 @@ export default function ShoppingCartPage() {
                                   }}
                                 >
                                   <IconButton onClick={() => handleQuantityChange(index, product.quantity - 1)}>
-                                    <RemoveIcon />
+                                    <RemoveIcon sx={{ fontSize: '20px' }} />
                                   </IconButton>
-                                  <Typography>{product.quantity}</Typography>
+                                  <Typography sx={{ fontSize: '15px' }}>{product.quantity}</Typography>
                                   <IconButton onClick={() => handleQuantityChange(index, product.quantity + 1)}>
-                                    <AddIcon />
+                                    <AddIcon sx={{ fontSize: '20px' }} />
+                                    {product.SKU.startsWith('WE') && <span style={{ fontSize: '10px' }}>x1</span>}
                                   </IconButton>
+                                  {product.SKU.startsWith('WE') && (
+                                    <>
+                                      <IconButton onClick={() => handleQuantityChange(index, product.quantity + 10)}>
+                                        <AddIcon sx={{ fontSize: '20px' }} />
+                                        <span style={{ fontSize: '10px' }}>x10</span>
+                                      </IconButton>
+                                      <IconButton onClick={() => handleQuantityChange(index, product.quantity + 100)}>
+                                        <AddIcon sx={{ fontSize: '20px' }} />
+                                        <span style={{ fontSize: '10px' }}>x100</span>
+                                      </IconButton>
+                                    </>
+                                  )}
                                 </Box>
                                 <Typography sx={{ fontSize: '12px' }}>Disponible: {product.Cantidad}</Typography>
                               </div>
@@ -250,7 +302,7 @@ export default function ShoppingCartPage() {
                                 <Box
                                   sx={{
                                     display: 'flex',
-                                    width: '140px',
+                                    width: product.SKU.startsWith('WE') ? '245px' : '120px',
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
                                     height: '40px',
@@ -259,12 +311,24 @@ export default function ShoppingCartPage() {
                                   }}
                                 >
                                   <IconButton onClick={() => handleQuantityChange(index, product.quantity - 1)}>
-                                    <RemoveIcon />
+                                    <RemoveIcon sx={{ fontSize: '20px' }} />
                                   </IconButton>
-                                  <Typography>{product.quantity}</Typography>
+                                  <Typography sx={{ fontSize: '15px' }}>{product.quantity}</Typography>
                                   <IconButton onClick={() => handleQuantityChange(index, product.quantity + 1)}>
                                     <AddIcon />
                                   </IconButton>
+                                  {product.SKU.startsWith('WE') && (
+                                    <>
+                                      <IconButton onClick={() => handleQuantityChange(index, product.quantity + 10)}>
+                                        <AddIcon sx={{ fontSize: '20px' }} />{' '}
+                                        <span style={{ fontSize: '12px' }}>x10</span>
+                                      </IconButton>
+                                      <IconButton onClick={() => handleQuantityChange(index, product.quantity + 100)}>
+                                        <AddIcon sx={{ fontSize: '20px' }} />{' '}
+                                        <span style={{ fontSize: '12px' }}>x100</span>
+                                      </IconButton>
+                                    </>
+                                  )}
                                 </Box>
                                 <Typography sx={{ fontSize: '12px' }}>Disponible: {product.Cantidad}</Typography>
                               </div>
@@ -300,7 +364,9 @@ export default function ShoppingCartPage() {
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
                     <Typography>
                       Subtotal:
-                      <span style={{ fontWeight: 'bold', marginLeft: '5px' }}>{fCurrency(calculateTotal())}</span>
+                      <span style={{ fontWeight: 'bold', marginLeft: '5px' }}>
+                        {fCurrency(calculateTotal() + calculateDiscount())}
+                      </span>
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
@@ -314,15 +380,19 @@ export default function ShoppingCartPage() {
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
                     <Typography>
                       Total a pagar:
-                      <span style={{ fontWeight: 'bold', marginLeft: '5px' }}>
-                        {fCurrency(calculateTotal() - calculateDiscount())}
-                      </span>
+                      <span style={{ fontWeight: 'bold', marginLeft: '5px' }}>{fCurrency(calculateTotal())}</span>
                     </Typography>
                   </Box>
 
                   <Divider sx={{ borderStyle: 'dashed', mt: 3, mb: 3 }} />
 
-                  <Button variant="contained" fullWidth sx={{ backgroundColor: 'black' }} onClick={handlePay}>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    sx={{ backgroundColor: 'black' }}
+                    onClick={handlePay}
+                    startIcon={<PaymentIcon />}
+                  >
                     Pagar
                   </Button>
                 </Grid>

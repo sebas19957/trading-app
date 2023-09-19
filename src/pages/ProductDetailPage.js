@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@mui/material/styles';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -9,6 +9,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import AddIcon from '@mui/icons-material/Add';
 import { fCurrency } from '../utils/formatNumber';
 import Label from '../components/label';
+import CartContext from '../context/CartContext';
 
 // ----------------------------------------------------------------------
 const StyledProductImg = styled('img')({
@@ -20,6 +21,7 @@ const StyledProductImg = styled('img')({
 
 export default function ProductDetailPage() {
   const { productId } = useParams();
+  const { setCartCount } = useContext(CartContext);
   const [product, setProduct] = React.useState([]);
   const [error, setError] = React.useState(false);
   const [quantity, setQuantity] = React.useState(1);
@@ -43,9 +45,9 @@ export default function ProductDetailPage() {
     }
   }, [productId]);
 
-  const addProduct = () => {
-    if (product.Cantidad >= quantity + 1) {
-      setQuantity(quantity + 1);
+  const addProduct = (multiplo) => {
+    if (product.Cantidad >= quantity + multiplo) {
+      setQuantity(quantity + multiplo);
     }
   };
 
@@ -69,12 +71,11 @@ export default function ProductDetailPage() {
 
     // Guarda el carrito actualizado en el localStorage
     localStorage.setItem('cart', JSON.stringify(cart));
-  };
 
-  console.log({
-    product,
-    error,
-  });
+    const cartProducts = JSON.parse(localStorage.getItem('cart'));
+
+    setCartCount(cartProducts.length);
+  };
 
   return (
     <>
@@ -106,7 +107,6 @@ export default function ProductDetailPage() {
                       </Label>
                     )}
 
-                    {/* <StyledProductImg alt={Descripcion} src={cover} /> */}
                     <StyledProductImg alt={product.Nombre} src={product.cover} />
                   </Box>
                 </Grid>
@@ -115,7 +115,6 @@ export default function ProductDetailPage() {
                     {product.Nombre}
                   </Typography>
                   <Typography variant="h4" sx={{ mt: 4 }}>
-                    &nbsp;
                     {fCurrency(product.PrecioUnitario)}
                   </Typography>
                   <Typography sx={{ mt: 4, mb: 2 }}>{product.Descripcion}</Typography>
@@ -136,7 +135,7 @@ export default function ProductDetailPage() {
                       <Box
                         sx={{
                           display: 'flex',
-                          width: '140px',
+                          width: product.SKU.startsWith('WE') ? '240px' : '120px',
                           alignItems: 'center',
                           justifyContent: 'space-between',
                           height: '40px',
@@ -145,12 +144,23 @@ export default function ProductDetailPage() {
                         }}
                       >
                         <IconButton onClick={subtractProduct} disabled={quantity === 1}>
-                          <RemoveIcon />
+                          <RemoveIcon sx={{ fontSize: '20px' }} />
                         </IconButton>
-                        <Typography>{quantity}</Typography>
-                        <IconButton onClick={addProduct}>
-                          <AddIcon />
+                        <Typography sx={{ fontSize: '15px' }}>{quantity}</Typography>
+                        <IconButton onClick={() => addProduct(1)}>
+                          <AddIcon sx={{ fontSize: '20px' }} />{' '}
+                          {product.SKU.startsWith('WE') && <span style={{ fontSize: '10px' }}>x1</span>}
                         </IconButton>
+                        {product.SKU.startsWith('WE') && (
+                          <>
+                            <IconButton onClick={() => addProduct(10)}>
+                              <AddIcon sx={{ fontSize: '20px' }} /> <span style={{ fontSize: '10px' }}>x10</span>
+                            </IconButton>
+                            <IconButton onClick={() => addProduct(100)}>
+                              <AddIcon sx={{ fontSize: '20px' }} /> <span style={{ fontSize: '10px' }}>x100</span>
+                            </IconButton>
+                          </>
+                        )}
                       </Box>
                       <Typography sx={{ fontSize: '12px' }}>Disponible: {product.Cantidad}</Typography>
                     </div>

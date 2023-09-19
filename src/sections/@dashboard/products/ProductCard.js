@@ -58,8 +58,8 @@ export default function ShopProductCard({ product }) {
 
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="subtitle1">
-              &nbsp;
               {fCurrency(PrecioUnitario)}
+              {SKU.startsWith('WE') && <span> x g</span>}
             </Typography>
           </Stack>
         </Stack>
