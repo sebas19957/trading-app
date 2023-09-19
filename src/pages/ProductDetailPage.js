@@ -162,7 +162,8 @@ export default function ProductDetailPage() {
                     <Stack direction="row" spacing={2}>
                       <Button
                         variant="container"
-                        sx={{ backgroundColor: 'black', color: 'white' }}
+                        // sx={{ color: 'white' }}
+                        disabled={product.Cantidad === 0}
                         startIcon={<AddShoppingCartIcon />}
                         onClick={() => addToCart(product, quantity)}
                       >

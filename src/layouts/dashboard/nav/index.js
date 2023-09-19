@@ -59,7 +59,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                Lionel Andrés Messi Cuccitini
+                Lionel Andrés Messi
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>

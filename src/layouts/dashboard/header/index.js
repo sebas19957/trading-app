@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 // @mui
 import { styled } from '@mui/material/styles';
 import { Box, Stack, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 // utils
 import { bgBlur } from '../../../utils/cssStyles';
 // components
@@ -41,6 +42,8 @@ Header.propTypes = {
 };
 
 export default function Header({ onOpenNav }) {
+  const navigate = useNavigate();
+
   return (
     <StyledRoot>
       <StyledToolbar>
@@ -55,7 +58,10 @@ export default function Header({ onOpenNav }) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
 
-        <Typography sx={{ color: 'black', fontWeight: 'bold', fontSize: { xs: '18px', md: '30px' } }}>
+        <Typography
+          sx={{ color: 'black', fontWeight: 'bold', cursor: 'pointer', fontSize: { xs: '18px', md: '30px' } }}
+          onClick={() => navigate('/products')}
+        >
           Aplicación de comercio
         </Typography>
 

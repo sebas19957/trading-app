@@ -1,10 +1,12 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import { Box, Button, Container, Divider, Grid, IconButton, Typography } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { fCurrency } from '../utils/formatNumber';
 
 // ----------------------------------------------------------------------
@@ -18,6 +20,7 @@ const StyledProductImg = styled('img')({
 export default function ShoppingCartPage() {
   const [products, setProducts] = React.useState([]);
   const [cart, setCart] = React.useState([]);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     const cartProducts = localStorage.getItem('cart');
@@ -32,30 +35,36 @@ export default function ShoppingCartPage() {
   const handleQuantityChange = (index, quantity) => {
     const updatedCart = [...cart];
     const product = updatedCart[index];
-    if (quantity >= 0 && quantity <= product.Cantidad) {
+    if (quantity >= 1 && quantity <= product.Cantidad) {
       product.quantity = quantity;
       setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
     }
   };
 
   const handlePay = () => {
-    const updatedProducts = [...products];
+    // Obtener la lista de productos y el carrito del localStorage
+    const products = JSON.parse(localStorage.getItem('products'));
+    const cart = JSON.parse(localStorage.getItem('cart'));
 
-    cart.forEach((cartProduct) => {
-      const productIndex = updatedProducts.findIndex((product) => product.SKU === cartProduct.SKU);
-      if (productIndex !== -1) {
-        updatedProducts[productIndex].Cantidad -= cartProduct.quantity;
+    // Recorrer el carrito y actualizar la cantidad de productos comprados en la lista de productos
+    cart.forEach((item) => {
+      const product =
+        products?.productosNormales.find((p) => p.SKU === item.SKU) ||
+        products?.productosPeso.find((p) => p.SKU === item.SKU) ||
+        products?.productosDescuentoEspecial.find((p) => p.SKU === item.SKU);
+      if (product) {
+        // Restar la cantidad comprada a la cantidad disponible del producto
+        product.Cantidad -= item.quantity;
       }
     });
 
-    localStorage.setItem('products', JSON.stringify(updatedProducts));
+    // Actualizar la lista de productos en el localStorage
+    localStorage.setItem('products', JSON.stringify(products));
+    localStorage.removeItem('cart');
 
-    // Actualiza el carrito eliminando los productos comprados
-    const updatedCart = cart.filter((cartProduct) => cartProduct.quantity > 0);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-
-    setProducts(updatedProducts);
-    setCart(updatedCart);
+    // Redireccionar a la página de respuesta
+    navigate('/products');
   };
 
   const calculateDiscount = () => {
@@ -89,6 +98,75 @@ export default function ShoppingCartPage() {
     return total;
   };
 
+  const calculateTotalByProduct = (productToCalculate) => {
+    let total = 0;
+    const product = cart.find((cartProduct) => cartProduct.SKU === productToCalculate.SKU);
+    if (product) {
+      if (product.SKU.startsWith('EA')) {
+        total = product.PrecioUnitario * product.quantity;
+      } else if (product.SKU.startsWith('WE')) {
+        const cantidadEnKilogramos = product.quantity / 1000;
+        total = product.PrecioUnitario * cantidadEnKilogramos;
+      } else if (product.SKU.startsWith('SP')) {
+        let cantidadDescuentos = Math.floor(product.quantity / 3);
+
+        // Verificar si se aplicarán más de 2 descuentos
+        if (cantidadDescuentos > 2) {
+          cantidadDescuentos = 2;
+        }
+
+        // Calcular el descuento total
+        let descuentoTotal = cantidadDescuentos * 0.2;
+
+        // Verificar si el descuento total supera el 50%
+        if (descuentoTotal > 0.5) {
+          descuentoTotal = 0.5;
+        }
+
+        total = product.PrecioUnitario * product.quantity * (1 - descuentoTotal);
+      }
+    }
+
+    return total;
+  };
+
+  const calculateDiscountByProduct = (productToCalculate) => {
+    let total = 0;
+    const product = cart.find((cartProduct) => cartProduct.SKU === productToCalculate.SKU);
+    if (product) {
+      if (product.SKU.startsWith('SP')) {
+        let cantidadDescuentos = Math.floor(product.quantity / 3);
+
+        // Verificar si se aplicarán más de 2 descuentos
+        if (cantidadDescuentos > 2) {
+          cantidadDescuentos = 2;
+        }
+
+        // Calcular el descuento total
+        let descuentoTotal = cantidadDescuentos * 0.2;
+
+        // Verificar si el descuento total supera el 50%
+        if (descuentoTotal > 0.5) {
+          descuentoTotal = 0.5;
+        }
+
+        total = product.PrecioUnitario * product.quantity * descuentoTotal;
+      }
+    }
+
+    return total;
+  };
+
+  const handleDeleteProduct = (sku) => {
+    // Eliminar el producto del localStorage
+    const cartProducts = JSON.parse(localStorage.getItem('cart'));
+    const updatedCart = cartProducts.filter((product) => product.SKU !== sku);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+
+    // Eliminar el producto del carrito en el estado
+    setCart(updatedCart);
+  };
+
   return (
     <>
       <Helmet>
@@ -96,7 +174,7 @@ export default function ShoppingCartPage() {
       </Helmet>
 
       <Container>
-        {cart.length !== 0 && (
+        {cart.length !== 0 ? (
           <>
             <Container>
               <Grid container spacing={3}>
@@ -107,6 +185,16 @@ export default function ShoppingCartPage() {
                         <Grid item xs={6} sm={3}>
                           <Box sx={{ width: '120px', height: '120px' }}>
                             <StyledProductImg alt={product.Nombre} src={product.cover} />
+                            <Button
+                              variant="contained"
+                              fullWidth
+                              color="error"
+                              sx={{ mt: 1 }}
+                              startIcon={<DeleteIcon />}
+                              onClick={() => handleDeleteProduct(product.SKU)}
+                            >
+                              Eliminar
+                            </Button>
                           </Box>
                         </Grid>
                         <Grid item xs={6} sm={6}>
@@ -148,7 +236,7 @@ export default function ShoppingCartPage() {
                             </Box>
                           </Box>
                         </Grid>
-                        <Grid item xs={6} sx={{ display: { xs: 'flex', sm: 'none' } }}>
+                        <Grid item xs={6} sx={{ display: { xs: 'flex', sm: 'none' }, marginTop: '50px' }}>
                           <Box>
                             <Box
                               sx={{
@@ -186,20 +274,20 @@ export default function ShoppingCartPage() {
                         <Grid item xs={6} sm={3}>
                           <Box sx={{ mb: 3 }}>
                             <Typography sx={{ fontSize: '17px', fontWeight: 'bold' }}>
-                              &nbsp;{fCurrency(product.PrecioUnitario)}
+                              {fCurrency(product.PrecioUnitario)}
                             </Typography>
                             <Typography sx={{ fontSize: '13px' }}>Valor unitario</Typography>
                           </Box>
 
-                          <Box sx={{ mb: 3 }}>
-                            <Typography sx={{ fontSize: '17px', fontWeight: 'bold' }}>
-                              &nbsp;{fCurrency(0)} {/* Cambiar 0 por calculateDiscount() */}
+                          <Box sx={{ mb: 3, display: calculateDiscountByProduct(product) === 0 && 'none' }}>
+                            <Typography sx={{ fontSize: '17px', fontWeight: 'bold', color: 'green' }}>
+                              {fCurrency(calculateDiscountByProduct(product))} {/* Cambiar 0 por calculateDiscount() */}
                             </Typography>
                             <Typography sx={{ fontSize: '13px' }}>Descuento</Typography>
                           </Box>
 
                           <Typography sx={{ fontSize: '17px', fontWeight: 'bold' }}>
-                            &nbsp;{fCurrency(product.PrecioUnitario * product.quantity)}
+                            {fCurrency(calculateTotalByProduct(product))}
                           </Typography>
                           <Typography sx={{ fontSize: '13px' }}>Total</Typography>
                         </Grid>
@@ -210,13 +298,26 @@ export default function ShoppingCartPage() {
                 </Grid>
                 <Grid item xs={12} sm={4} sx={{ borderLeft: '1px dashed rgba(145, 158, 171, 0.24)' }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
-                    <Typography>Subtotal: {fCurrency(calculateTotal())}</Typography>
+                    <Typography>
+                      Subtotal:
+                      <span style={{ fontWeight: 'bold', marginLeft: '5px' }}>{fCurrency(calculateTotal())}</span>
+                    </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
-                    <Typography>Descuentos: {fCurrency(calculateDiscount())}</Typography>
+                    <Typography>
+                      Descuentos:
+                      <span style={{ fontWeight: 'bold', marginLeft: '5px', color: 'green' }}>
+                        {fCurrency(calculateDiscount())}
+                      </span>
+                    </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
-                    <Typography>Total: {fCurrency(calculateTotal() - calculateDiscount())}</Typography>
+                    <Typography>
+                      Total a pagar:
+                      <span style={{ fontWeight: 'bold', marginLeft: '5px' }}>
+                        {fCurrency(calculateTotal() - calculateDiscount())}
+                      </span>
+                    </Typography>
                   </Box>
 
                   <Divider sx={{ borderStyle: 'dashed', mt: 3, mb: 3 }} />
@@ -228,8 +329,31 @@ export default function ShoppingCartPage() {
               </Grid>
             </Container>
           </>
+        ) : (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              height: 'calc(100vh - 200px)',
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+              <img src="/assets/response/empty_cart.png" alt="empty_cart" />
+              <Typography sx={{ textAlign: 'center', mt: -4 }} variant="h4">
+                No hay productos agregados al carrito
+              </Typography>
+              <Button
+                sx={{ mt: 3, textTransform: 'uppercase', backgroundColor: 'black' }}
+                variant="contained"
+                onClick={() => navigate('/products')}
+              >
+                Ir al incio
+              </Button>
+            </Box>
+          </div>
         )}
-        {cart.length === 0 && <Typography>Producto NO encontrado</Typography>}
       </Container>
     </>
   );

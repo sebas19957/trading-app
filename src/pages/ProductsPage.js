@@ -1,9 +1,12 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 // @mui
-import { CircularProgress, Container, Typography } from '@mui/material';
+import { Box, Button, Container, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 // components
 import { ProductList, ProductCartWidget } from '../sections/@dashboard/products';
+// imgs
+// import NoData from "/assets/response/no_data.png";
 
 export const PRODUCTS = {
   productosNormales: [
@@ -138,6 +141,7 @@ export const PRODUCTS = {
 
 export default function ProductsPage() {
   const [productos, setProductos] = React.useState([]);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     const productosLS = localStorage.getItem('products');
@@ -162,7 +166,7 @@ export default function ProductsPage() {
       </Helmet>
 
       <Container>
-        {productos ? (
+        {productos.length !== 0 ? (
           <>
             {/* // ---------------------------------------------------------------------- */}
             <Typography variant="h4" sx={{ mb: 2, mt: 2 }}>
@@ -180,13 +184,31 @@ export default function ProductsPage() {
             </Typography>
             <ProductList products={productos?.productosDescuentoEspecial} />
             {/* // ---------------------------------------------------------------------- */}
-            <ProductCartWidget />
+            {/* <ProductCartWidget /> */}
           </>
         ) : (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-            <div style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto' }}>
-              <CircularProgress sx={{ color: 'black' }} />
-            </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              height: 'calc(100vh - 200px)',
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+              <img src="/assets/response/no_data.png" alt="no_data" />
+              <Typography sx={{ textAlign: 'center', mt: -4 }} variant="h4">
+                No hay productos agregados
+              </Typography>
+              <Button
+                sx={{ mt: 3, textTransform: 'uppercase', backgroundColor: 'black' }}
+                variant="contained"
+                onClick={() => navigate('/upload-products')}
+              >
+                Agregar Productos
+              </Button>
+            </Box>
           </div>
         )}
       </Container>
