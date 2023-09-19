@@ -2,7 +2,7 @@
 
 ## Asignatura Linea de Énfasis I: BUENAS PRACTICAS EN DISEÑO DE SOFTWARE
 
-### Integrantes: Jose Marulanda, Alexis, Sebastian Mosquera
+### Integrantes: Jose Marulanda, Alexis Patiño, Sebastian Mosquera
 
 ### Ejecutar en desarrollo
 
