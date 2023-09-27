@@ -1,10 +1,12 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 // @mui
-import { Box, Button, Container, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Container, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 // components
 import { ProductList } from '../sections/@dashboard/products';
+
+import { getProducts } from '../services/productsService';
 
 export const PRODUCTS = {
   productosNormales: [
@@ -136,16 +138,27 @@ export const PRODUCTS = {
 };
 
 export default function ProductsPage() {
-  const [productos, setProductos] = React.useState([]);
+  const [productosNormales, setProductosNormales] = React.useState([]);
+  const [productosPeso, setProductosPeso] = React.useState([]);
+  const [productosDescuentoEspecial, setProductosDescuentoEspecial] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    const productosLS = localStorage.getItem('products');
-
-    if (productosLS) {
-      const productosObjeto = JSON.parse(productosLS);
-      setProductos(productosObjeto);
-    }
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await getProducts();
+        setProductosNormales(response.data.filter((producto) => producto.SKU.startsWith('EA')));
+        setProductosPeso(response.data.filter((producto) => producto.SKU.startsWith('WE')));
+        setProductosDescuentoEspecial(response.data.filter((producto) => producto.SKU.startsWith('SP')));
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   return (
@@ -155,22 +168,27 @@ export default function ProductsPage() {
       </Helmet>
 
       <Container>
-        {productos.length !== 0 ? (
+        {loading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            <CircularProgress sx={{ width: '100px', height: '100px', color: 'black' }} />
+            <Typography>Cargando productos...</Typography>
+          </div>
+        ) : productosNormales.length !== 0 || productosPeso.length !== 0 || productosDescuentoEspecial.length !== 0 ? (
           <>
             <Typography variant="h4" sx={{ mb: 2, mt: 2 }}>
               Productos Normales
             </Typography>
-            <ProductList products={productos?.productosNormales} />
+            <ProductList products={productosNormales} />
 
             <Typography variant="h4" sx={{ mb: 2, mt: 4 }}>
               Productos de Peso
             </Typography>
-            <ProductList products={productos?.productosPeso} />
+            <ProductList products={productosPeso} />
 
             <Typography variant="h4" sx={{ mb: 2, mt: 4 }}>
               Productos con Descuentos
             </Typography>
-            <ProductList products={productos?.productosDescuentoEspecial} />
+            <ProductList products={productosDescuentoEspecial} />
           </>
         ) : (
           <div

@@ -25,7 +25,7 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ product }) {
-  const { SKU, Descripcion, PrecioUnitario, cover } = product;
+  const { SKU, descripcion, precio_unitario: precioUnitario, cover } = product;
 
   return (
     <Card sx={{ cursor: 'pointer' }}>
@@ -46,19 +46,19 @@ export default function ShopProductCard({ product }) {
               Promoción
             </Label>
           )}
-          <StyledProductImg alt={Descripcion} src={cover} />
+          <StyledProductImg alt={descripcion} src={cover} />
         </Box>
 
         <Stack spacing={2} sx={{ p: 3 }}>
           <Link color="inherit" underline="hover">
             <Typography variant="subtitle2" noWrap>
-              {Descripcion}
+              {descripcion}
             </Typography>
           </Link>
 
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="subtitle1">
-              {fCurrency(PrecioUnitario)}
+              {fCurrency(precioUnitario)}
               {SKU.startsWith('WE') && <span> x g</span>}
             </Typography>
           </Stack>
